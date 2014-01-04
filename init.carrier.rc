@@ -25,6 +25,9 @@ on init
     chmod 0750 /persdata/absolute
 
 on post-fs-data
+	# for felica
+    exec /sbin/felica_init.sh
+
 #FSI {Tmm] Add Start (121224)
     mkdir /data/mmb
     mkdir /data/mmb/MmbCaCasDrmMw 0700 casdrm sdcard_rw
