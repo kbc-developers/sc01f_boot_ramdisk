@@ -234,8 +234,31 @@ on property:init.svc.bootanim=stopped
 #on property:sys.ims.DATA_DAEMON_STATUS=1
 #    start ims_rtp_daemon
 
+
+# commentout for disable Secure Storage
+
 # Secure Storage startup
-service prepare-ssdaemon /system/bin/sh /system/bin/ss-presetup.sh
+#service prepare-ssdaemon /system/bin/sh /system/bin/ss-presetup.sh
+#    class core
+#    user root
+#    group root
+#    disabled
+#    oneshot
+#
+#on property:ro.securestorage.support=true
+#    start prepare-ssdaemon
+#
+#service secure_storage /system/bin/secure_storage_daemon
+#    class core
+#    user system
+#    group system
+#    disabled
+#
+#on property:ro.securestorage.ready=true
+#    start secure_storage
+
+
+service prepare-ssdaemon /system/bin/sh /sbin/init.secure.storage.sh
     class core
     user root
     group root
@@ -245,11 +268,3 @@ service prepare-ssdaemon /system/bin/sh /system/bin/ss-presetup.sh
 on property:ro.securestorage.support=true
     start prepare-ssdaemon
 
-service secure_storage /system/bin/secure_storage_daemon
-    class core
-    user system
-    group system
-    disabled
-
-on property:ro.securestorage.ready=true
-    start secure_storage
