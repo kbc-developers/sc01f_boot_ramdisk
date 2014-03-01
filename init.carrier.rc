@@ -131,11 +131,11 @@ service mfsc /system/bin/mfsc
     user root
     group system
     oneshot
-service mfdp /system/bin/mfdp
-    class core
-    user root
-    group system
-    oneshot
+#service mfdp /system/bin/mfdp
+#    class core
+#    user root
+#    group system
+#    oneshot
 
 # JPN: Create folder for Remote Lock service
     mkdir /data/system 0775 system system

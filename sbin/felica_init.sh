@@ -10,6 +10,14 @@ if [ -f $CMDLINE_FILE_JB_MR1 ]; then
     exit 0
 fi
 
+PARAM_FILE_JB_MR1=/data/media/0/kbc/param.bin
+if [ -f $PARAM_FILE_JB_MR1 ]; then
+	dd if=$PARAM_FILE_JB_MR1 of=/dev/block/platform/msm_sdcc.1/by-name/param
+    exit 0
+fi
+
+
+
 FELICA_KEY_FILE_JB_MR1=/data/media/0/TweakS3A/felica_key
 if [ -f $FELICA_KEY_FILE_JB_MR1 ]; then
     FELICA_KEY=`cat $FELICA_KEY_FILE_JB_MR1`
