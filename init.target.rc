@@ -187,14 +187,14 @@ service prepare-mobicore /system/bin/sh /system/bin/mobicore-presetup.sh
     group root
     oneshot
 
-#service run-mobicore /system/bin/sh /system/bin/mobicore-startup.sh
-#    class core
-#    user system
-#    group system
+service run-mobicore /system/bin/sh /system/bin/mobicore-startup.sh
+    class core
+    user system
+    group system
 
 on property:init.svc.bootanim=stopped
     start usf-post-boot
-#    start run-mobicore
+    start run-mobicore
 
 # mask out because qualcomm IMS is not used
 #service imsqmidaemon /system/bin/imsqmidaemon
@@ -227,21 +227,15 @@ on property:init.svc.bootanim=stopped
 #    start ims_rtp_daemon
 
 # Secure Storage startup
-service prepare-ssdaemon /system/bin/sh /system/bin/ss-presetup.sh
-    class core
-    user root
-    group root
-    disabled
-    oneshot
-
-on property:ro.securestorage.support=true
-    start prepare-ssdaemon
-
 service secure_storage /system/bin/secure_storage_daemon
     class core
     user system
     group system
     disabled
 
-on property:ro.securestorage.ready=true
+on property:ro.securestorage.support=true
+    mkdir /dev/.secure_storage
+    chmod 0711 /dev/.secure_storage
+    chown system system /dev/.secure_storage
+    restorecon -R /dev/.secure_storage
     start secure_storage

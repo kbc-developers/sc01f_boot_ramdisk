@@ -613,6 +613,7 @@ on boot
 
 # Permissions for Camera
    chown system radio /sys/class/camera/rear/rear_camfw
+   chown system radio /sys/class/camera/rear/rear_camfw_load
    chown system radio /sys/class/camera/rear/rear_camtype
    chown system radio /sys/class/camera/flash/rear_flash
    chown system radio /sys/class/camera/front/front_camfw
@@ -1070,6 +1071,17 @@ service dumpstate /system/bin/dumpstate -s
     socket dumpstate stream 0660 shell log
     disabled
     oneshot
+
+# bugreport 
+service bugreport /system/bin/dumpstate -d -p -B \
+                -o /data/data/com.android.shell/files/bugreports/bugreport
+    class main
+    disabled
+    oneshot
+#   keycodes 114 115 116
+
+# symlink to bugreport storage location
+symlink /data/data/com.android.shell/files/bugreports /data/bugreports
 
 service sshd /system/bin/start-ssh
     class main
