@@ -7,7 +7,7 @@ on init
     export EXTERNAL_STORAGE_DOCOMO /storage/extSdCard
 
 # NFC
-    symlink /dev/felica_cen /dev/snfc_cen
+#    symlink /dev/felica_cen /dev/snfc_cen
 
 on init
 
@@ -114,6 +114,15 @@ on boot
     chown system system /sys/class/input/input22/enabled
     chown system system /sys/class/sec/sec_touchkey/brightness
 
+# JPN: Create folder for Remote Lock service
+    mkdir /data/system 0775 system system
+
+# JPN: For MobileTV [ISDBT] \android\device\samsung\hltedcm\init.hltedcm.rc
+    chown system system /dev/isdbt
+    chmod 0660 /dev/isdbt
+    chown system system /dev/s3c-tsi
+    chmod 0660 /dev/s3c-tsi
+	
 # bluetooth dhcp config
 service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
     class main
@@ -129,22 +138,13 @@ service iprenew_bt-pan /system/bin/dhcpcd -n
 service mfsc /system/bin/mfsc
     class core
     user root
-    group system
+    group system felicalock nfc
     oneshot
 #service mfdp /system/bin/mfdp
 #    class core
 #    user root
-#    group system
+#    group system felicalock nfc
 #    oneshot
-
-# JPN: Create folder for Remote Lock service
-    mkdir /data/system 0775 system system
-
-# JPN: For MobileTV [ISDBT] \android\device\samsung\hltedcm\init.hltedcm.rc
-    chown system system /dev/isdbt
-    chmod 0660 /dev/isdbt
-    chown system system /dev/s3c-tsi
-    chmod 0660 /dev/s3c-tsi
 
 # JPN: For MobileTV [ISDBT] \android\device\samsung\hltedcm\init.hltedcm.rc
 service mobileTV /system/bin/broadcastProcessObserver
