@@ -1,4 +1,3 @@
-#!/system/bin/sh
 # Copyright (c) 2012, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -8,7 +7,7 @@
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in the
 #       documentation and/or other materials provided with the distribution.
-#     * Neither the name of The Linux Foundation nor
+#     * Neither the name of Code Aurora nor
 #       the names of its contributors may be used to endorse or promote
 #       products derived from this software without specific prior written
 #       permission.
@@ -26,44 +25,33 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-#
-# start ril-daemon only for targets on which radio is present
-#
-baseband=`getprop ro.baseband`
-multirild=`getprop ro.multi.rild`
-dsds=`getprop persist.dsds.enabled`
-netmgr=`getprop ro.use_data_netmgrd`
-sgltecsfb=`getprop persist.radio.sglte_csfb`
+# JPN CPRM
+/dev/block/mmcblk1	0660	root	system
 
-case "$baseband" in
-    "apq")
-    setprop ro.radio.noril yes
-    stop ril-daemon
-esac
+# ISDB-Tmm 
+/dev/mmtuneri2c		  0660	  system    system
+/dev/mmtunerspi		  0660	  system    system
 
-case "$baseband" in
-    "msm" | "csfb" | "svlte2a" | "mdm" | "sglte" | "unknown")
-    start qmuxd
-    case "$baseband" in
-        "svlte2a" | "csfb")
-        start qmiproxy
-        ;;
-        "sglte")
-        if [ "x$sgltecsfb" != "xtrue" ]; then
-          start qmiproxy
-        else
-          setprop persist.radio.voice.modem.index 0
-        fi
-    esac
-    case "$multirild" in
-        "true")
-         case "$dsds" in
-             "true")
-             start ril-daemon1
-         esac
-    esac
-    case "$netmgr" in
-        "true")
-        start netmgrd
-    esac
-esac
+# Felica
+/dev/felica               0660    mfc   system
+/dev/felica_pon           0660    mfc   system
+/dev/felica_cen           0660    mfc   felicalock
+/dev/felica_rfs           0440    mfc   system
+/dev/felica_rws           0660    mfc   system
+/dev/felica_ant           0660    mfc   system
+/dev/felica_int_poll      0400    mfc   system
+/dev/felica_uid           0220    mfc   system
+/dev/felica_uicc          0660    mfc   system
+
+# NFC
+# JPN Felica Temporary Workaround
+/dev/ttyHSL1              0660    nfc       nfc
+/dev/snfc_uart            0660    nfc       nfc
+/dev/snfc_pon             0220    nfc       nfc
+/dev/snfc_cen             0440    nfc       system
+/dev/snfc_hsel            0660    nfc       nfc
+/dev/snfc_intu_poll       0440    nfc       nfc
+/dev/snfc_available_poll  0440    nfc       nfc
+/dev/snfc_rfs             0440    nfc       nfc
+/dev/snfc_rfs_poll        0440    nfc       nfc
+/dev/uartcc               0660    nfc       nfc

@@ -6,45 +6,45 @@
 on init
     export EXTERNAL_STORAGE_DOCOMO /storage/extSdCard
 
-# NFC
-#    symlink /dev/felica_cen /dev/snfc_cen
-
-on init
-
-    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/mms-common.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/sec_edm.jar:/system/framework/seccamera.jar:/system/framework/scrollpause.jar:/system/framework/stayrotation.jar:/system/framework/smartfaceservice.jar:/system/framework/secocsp.jar:/system/framework/abt-persistence.jar:/system/framework/sc.jar:/system/framework/oem-services.jar:/system/framework/commonimsinterface.jar
-
-#For Absolute Persistence Partition
-    mkdir /persdata 0755 system system
-    mkdir /persdata/absolute 0750 system system
-
-    wait /dev/block/platform/msm_sdcc.1/by-name/persdata
-    mount ext4 /dev/block/platform/msm_sdcc.1/by-name/persdata /persdata/absolute nosuid nodev barrier=1
-    chown system system /persdata
-    chmod 0755 /persdata
-    chown system system /persdata/absolute
-    chmod 0750 /persdata/absolute
-
 on post-fs-data
-#FSI {Tmm] Add Start (121224)
+
+# Permissions for Camera
+    chown media system /sys/class/camera/flash/movie_brightness
+# JPN: For MobileTV [ISDBT] \android\device\samsung\hltedcm\init.hltedcm.rc
+# FeliCa
+    mkdir /efs/FeliCaLock 0770 system felicalock
+
+    mkdir /data/atsc-mh 0775 system system
+    mkdir /data/one-seg 0775 system system
+    chown system system /data/atsc-mh
+    chown system system /data/one-seg
+    chmod 0775 /data/atsc-mh
+    chmod 0775 /data/one-seg
+
+# Tmm Add Start
+# sai modify start
     mkdir /data/mmb
+    #TMM Modification
     mkdir /data/mmb/MmbCaCasDrmMw 0700 casdrm sdcard_rw
-    mkdir /data/mmb/MmbFcCtlMw 0700 fcctl sdcard_rw
-    mkdir /data/mmb/MmbFcCtlMw/dic 0700 fcctl sdcard_rw
-    mkdir /data/mmb/MmbStCtlMw 0700 stctl sdcard_rw
-    mkdir /data/mmb/MmbFcMp4Mw 0700 fcmp4 sdcard_rw
-    mkdir /data/mmb/common 0770 root sdcard_rw
-    mkdir /data/mmb/common/MmbFcCtlMw 0700 fcctl sdcard_rw
-        chown root mmb /data/mmb
+    mkdir /data/mmb/MmbFcCtlMw 0700 system sdcard_rw
+    mkdir /data/mmb/MmbFcCtlMw/dic 0700 system sdcard_rw
+    mkdir /data/mmb/MmbStCtlMw 0700 system sdcard_rw
+    mkdir /data/mmb/MmbFcMp4Mw 0700 system sdcard_rw
+    mkdir /data/mmb/common 0770 system sdcard_rw
+    mkdir /data/mmb/common/MmbFcCtlMw 0700 system sdcard_rw
+        chown system mmb /data/mmb
 
-    mkdir data/mmb/common/fcctl 0775 fcctl sdcard_rw
-        chown fcctl sdcard_rw data/mmb/common/fcctl
+    mkdir data/mmb/common/fcctl 0775 system sdcard_rw
+        chown system sdcard_rw data/mmb/common/fcctl
 
-    mkdir data/mmb/common/streccm 0775 streccm sdcard_rw
-        chown streccm sdcard_rw data/mmb/common/streccm
+    mkdir data/mmb/common/streccm 0775 system sdcard_rw
+        chown system sdcard_rw data/mmb/common/streccm
+    mkdir data/mmb/common/streccm 0775 system sdcard_rw
+        chown system sdcard_rw data/mmb/common/streccm
 
     chmod 775 /data/mmb
     mkdir /data/mmb/MmbFcCtlMwMnt
-    chown fcctl sdcard_rw /data/mmb/MmbFcCtlMwMnt
+    chown system sdcard_rw /data/mmb/MmbFcCtlMwMnt
     chmod 755 /data/mmb/MmbFcCtlMwMnt
 
         mkdir /data/data/.drm/.sec_sctime
@@ -58,32 +58,35 @@ on post-fs-data
     chmod 0770 /data/mmb/common/manifest
     chown root mmb /data/mmb/common/manifest
 
-#FSI {Tmm] Add End (121224)
-
-# FeliCa
-    mkdir /efs/FeliCaLock 0770 system felicalock
-
-# Permissions for Camera
-    chown media system /sys/class/camera/flash/movie_brightness
-
-# JPN: For MobileTV [ISDBT] \android\device\samsung\hltedcm\init.hltedcm.rc
-    mkdir /data/atsc-mh 0775 system system
-    mkdir /data/one-seg 0775 system system
-    chown system system /data/atsc-mh
-    chown system system /data/one-seg
-    chmod 0775 /data/atsc-mh
-    chmod 0775 /data/one-seg
-
-# JPN : Create folder for LongLife Mode
-    mkdir /data/longlife 0775 system system
-    chown system system /data/longlife
-    chmod 0775 /data/longlife
+    chown system sdcard_rw /data/mmb/MmbFcCtlMwMnt/expway_broadcast.db
+# sai modify end
+# Tmm Add End
 
 # JPN: For /efs/imei folder permission
     chown radio radio /efs/imei
     chmod 0775 /efs/imei
-
+    
 on boot
+# permission for Input Device(Touchkey).
+    chmod 0660 /sys/class/input/input2/enabled
+    chown system system /sys/class/input/input2/enabled
+    chown radio system /sys/class/sec/sec_touchkey/touch_sensitivity
+    chown radio system /sys/class/sec/sec_touchkey/touchkey_firm_update
+    chown system radio /sys/class/sec/sec_touchkey/glove_mode
+    chown system radio /sys/class/sec/sec_touchkey/flip_mode
+    chown system radio /sys/class/sec/sec_touchkey/boost_level
+# permission for Input Device(Wacom).
+    chmod 0660 /sys/class/input/input3/enabled
+    chown system system /sys/class/input/input3/enabled
+    chown system radio /sys/class/sec/sec_epen/epen_firm_update
+    chown system radio /sys/class/sec/sec_epen/epen_rotation
+    chown system radio /sys/class/sec/sec_epen/epen_hand
+    chown system radio /sys/class/sec/sec_epen/epen_reset
+    chown system radio /sys/class/sec/sec_epen/epen_reset_result
+    chown system radio /sys/class/sec/sec_epen/epen_checksum
+    chown system radio /sys/class/sec/sec_epen/epen_checksum_result
+    chown system radio /sys/class/sec/sec_epen/epen_saving_mode
+    chown system radio /sys/class/sec/sec_epen/boost_level
 
 # permissions for bluetooth.
     setprop ro.bt.bdaddr_path "/efs/bluetooth/bt_addr"
@@ -95,72 +98,52 @@ on boot
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
 
 # bluetooth LPM
-    chmod 0220 /proc/bluetooth/sleep/lpm
+    chmod 0660 /proc/bluetooth/sleep/lpm
     chmod 0220 /proc/bluetooth/sleep/btwrite
     chown bluetooth net_bt_stack /proc/bluetooth/sleep/lpm
     chown bluetooth net_bt_stack /proc/bluetooth/sleep/btwrite
     chmod 0600 /dev/btlock
     chown bluetooth bluetooth /dev/btlock
 
-# Permissions for InputDevices.
-    chmod 0660 /sys/class/input/input2/enabled
-    chmod 0660 /sys/class/input/input3/enabled
-    chmod 0660 /sys/class/input/input22/enabled
-    chown system system /sys/class/input/input2/enabled
-    chown system system /sys/class/input/input3/enabled
-    chown system system /sys/class/input/input22/enabled
-    chown system system /sys/class/sec/sec_touchkey/brightness
-
-# JPN: Create folder for Remote Lock service
-    mkdir /data/system 0775 system system
+# JPN: For MobileTV [ISDBT] \android\device\samsung\hltedcm\init.hltedcm.rc
+    chown system system /dev/mmtuneri2c
+    chmod 0660 /dev/mmtuneri2c
+    chown system system /dev/mmtunerspi
+    chmod 0660 /dev/mmtunerspi 
 
 # JPN: For MobileTV [ISDBT] \android\device\samsung\hltedcm\init.hltedcm.rc
-    chown system system /dev/isdbt
-    chmod 0660 /dev/isdbt
-    chown system system /dev/s3c-tsi
-    chmod 0660 /dev/s3c-tsi
-	
-# bluetooth dhcp config
-service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
-    class main
-    disabled
-    oneshot
-
-service iprenew_bt-pan /system/bin/dhcpcd -n
-    class late_start
-    disabled
-    oneshot
-
-# Felica
-service mfsc /system/bin/mfsc
-    class core
-    user root
-    group system felicalock nfc
-    oneshot
-service mfdp /system/bin/mfdp
-    class core
-    user root
-    group system felicalock nfc
-    oneshot
-
-# JPN: For MobileTV [ISDBT] \android\device\samsung\hltedcm\init.hltedcm.rc
-service mobileTV /system/bin/broadcastProcessObserver
+	service mobileTV /system/bin/broadcastProcessObserver
     class main
     user system
-    group system radio audio camera graphics inet net_bt net_bt_admin net_raw sdcard_rw shell mmb
+    group system radio audio camera graphics inet net_bt net_bt_admin net_raw sdcard_rw sdcard_r shell mmb
 
-# remote lock
-service init_devadmin /system/vendor/bin/init_devadmin.sh
-     user system
-     group system
-     oneshot
+on post-fs-data
+    # 3LM settings
+    setprop ro.3lm.production 1
+    setprop ro.3LM.extended 1
+    setprop ro.3LM.oem_sd_encryption 1
+    setprop ro.3LM.oem_manifest 3
 
-# docomo virus scan - start daemon
-service mfescand /system/bin/mfescand
-    class main
-    socket mfescand stream 600 system system
+on fs
 
-#FSI {Tmm] Add Start (121224)
+# Support Preload install apks
+    mkdir /preload 0771 system system
+  
+#For Absolute Persistence Partition 
+       
+     mkdir /persdata 0755 system system 
+     mkdir /persdata/absolute 0750 system system 
+  
+     wait /dev/block/platform/msm_sdcc.1/by-name/persdata 
+     check_fs /dev/block/platform/msm_sdcc.1/by-name/persdata ext4 
+     mount ext4 /dev/block/platform/msm_sdcc.1/by-name/persdata /persdata/absolute nosuid nodev barrier=1 
+      
+     chown system system /persdata 
+     chmod 0755 /persdata 
+     chown system system /persdata/absolute 
+     chmod 0750 /persdata/absolute
+
+# Tmm Add Start
 service mmbcacasdrmmw /system/bin/MmbCaCasDrmMw
     class main
     socket MmbCaCasDrmMw stream 666
@@ -191,8 +174,19 @@ service mmbcmservice /system/bin/MmbStRecCmMwService
     class late_start
 #    user root
 #    group mmb
-#FSI {Tmm] Add End (121224)
-   
+# Tmm Add End
+
+# bluetooth dhcp config
+service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
+    class main
+ disabled
+ oneshot
+
+service iprenew_bt-pan /system/bin/dhcpcd -n
+    class late_start
+ disabled
+ oneshot
+
 # service for TZPR provisioning version check app
 service scranton_RD /system/bin/scranton_RD
     class main
@@ -204,6 +198,34 @@ service scranton_RD /system/bin/scranton_RD
 on property:sys.qseecomd.enable=true
     start scranton_RD
 
-# eMMC for USB 3.0 : Changing scheduler to cfq after boot complete
-on property:sys.boot_completed=1
-    write /sys/block/mmcblk0/queue/scheduler cfq
+# umount service
+service umount_service /system/bin/umount /preload
+    disabled
+    oneshot
+
+# docomo virus scan - start daemon
+service mfescand /system/bin/mfescand
+    class main
+    socket mfescand stream 600 system system
+    
+# Support Preload install apks
+on property:persist.sys.storage_preload=1
+    mount ext4 /dev/block/mmcblk0p25 /preload nosuid nodev ro barrier=1
+    setprop storage.preload.complete 1
+
+on property:persist.sys.storage_preload=0
+    start umount_service
+
+# TODO: replace it with device's DEXPREOPT_BOOT_JARS
+
+# Felica
+service mfsc /system/bin/mfsc
+    class core
+    user root
+    group system felicalock nfc
+    oneshot
+service mfdp /system/bin/mfdp
+    class core
+    user root
+    group system felicalock nfc
+    oneshot
